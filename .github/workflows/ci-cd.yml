@@ -22,6 +22,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Run tests
+        env:
+          DJANGO_SETTINGS_MODULE: habit_tracker.settings
         run: python manage.py test
       - name: Run linting
         run: flake8 .
