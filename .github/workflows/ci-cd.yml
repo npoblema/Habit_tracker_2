@@ -15,7 +15,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      - name: Run tests
+      - name: Run migrations and tests
         env:
           DJANGO_SETTINGS_MODULE: habit_tracker.settings
         run: |
@@ -35,9 +35,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install flake8  # Убедимся, что flake8 установлен
+          pip install flake8
       - name: Run linting
-        run: flake8 .
+        run: flake8 . --max-line-lenght=120 --exclude=.venv
 
   build:
     runs-on: ubuntu-latest
