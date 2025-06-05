@@ -76,7 +76,7 @@ jobs:
         run: |
           echo "$SSH_PRIVATE_KEY" > private_key
           chmod 600 private_key
-          ssh -i private_key $SERVER_USER@$SERVER_HOST << 'EOF'
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i private_key $SERVER_USER@$SERVER_HOST << 'EOF'
             cd /home/moscow/habit_tracker
             docker-compose pull
             docker-compose up -d
