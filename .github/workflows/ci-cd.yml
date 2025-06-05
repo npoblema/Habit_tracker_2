@@ -18,7 +18,10 @@ jobs:
       - name: Run tests
         env:
           DJANGO_SETTINGS_MODULE: habit_tracker.settings
-        run: python manage.py test
+        run: |
+          python manage.py makemigrations
+          python manage.py migrate
+          python manage.py test
 
   lint:
     runs-on: ubuntu-latest
@@ -32,7 +35,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install flake8  # Добавляем установку flake8, если его нет в requirements.txt
+          pip install flake8  # Убедимся, что flake8 установлен
       - name: Run linting
         run: flake8 .
 
