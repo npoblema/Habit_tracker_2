@@ -126,3 +126,9 @@ if 'test' in os.environ.get('DJANGO_SETTINGS_MODULE', ''):
 
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
 print(f"TELEGRAM_BOT_TOKEN: {TELEGRAM_BOT_TOKEN}")
+
+if 'test' in sys.argv:
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:',
+    }
