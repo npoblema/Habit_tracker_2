@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-
+import sys
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -125,4 +125,10 @@ if 'test' in os.environ.get('DJANGO_SETTINGS_MODULE', ''):
     CELERY_TASK_EAGER_PROPAGATES = True
 
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
-print(f"TELEGRAM_BOT_TOKEN: {TELEGRAM_BOT_TOKEN}")
+#print(f"TELEGRAM_BOT_TOKEN: {TELEGRAM_BOT_TOKEN}")
+
+if 'GITHUB_ACTIONS' in os.environ or 'test' in sys.argv or 'makemigrations' in sys.argv:
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:',
+    }

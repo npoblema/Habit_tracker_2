@@ -1,148 +1,169 @@
-# Система отслеживания привычек
-Система отслеживания привычек — это REST API для управления повседневными привычками с функцией уведомлений через Telegram. Проект разработан для создания, изменения и удаления привычек, просмотра публичных привычек других пользователей и отправки напоминаний с использованием асинхронных задач.
+# Habit Tracker
 
-## Общая информация о проекте
+Приложение для отслеживания привычек с возможностью отправки напоминаний через Telegram.
 
-Проект предоставляет следующие возможности:
+## Стек технологий
+- Python 3.11
+- Django 4.2
+- PostgreSQL 15
+- Redis 7
+- Celery 5.3
+- Nginx 1.25
+- Docker 24
+- Docker Compose 2.20
+- GitHub Actions
 
-- Формирование, редактирование и удаление записей о привычках.
-- Доступ к списку публичных привычек.
-- Автоматическая отправка уведомлений через Telegram с использованием асинхронной обработки.
+## Локальный запуск проекта
 
-Для реализации используются:
-
-- Django и Django REST Framework для построения API.
-- PostgreSQL как база данных.
-- Celery и Redis для выполнения асинхронных задач.
-- Telegram Bot API для отправки уведомлений.
-- drf-yasg для создания документации API (Swagger).
-- Код протестирован с покрытием **97%**.
-
----
-
-## Требования
-
-- Python: версия 3.12.
-- PostgreSQL: версия 13 или выше.
-- Redis: версия 5 или выше.
-- Docker (рекомендуется для запуска Redis).
-- Токен Telegram-бота, полученный через ([@BotFather](https://t.me/BotFather))
-
----
-
-## Инструкция по установке
+### Предварительные требования
+- Docker 24.0+ и Docker Compose 2.20+
+- Python 3.11+ (для разработки)
 
 ### 1. Клонирование репозитория
 ```bash
-git clone <repository_url>
-cd Course_work_Habit_Tracker
+git clone https://github.com/npoblema/Habit_tracker_2.git
+cd Habit_tracker_2
 ```
 
-### 2. Настройка виртуального окружения
+2. Настройка окружения
+Создайте файл .env на основе .env_sample:
+
 ```bash
-python -m venv .venv
-.venv\Scripts\activate  # Windows
+cp .env_sample .env
 ```
-
-### 3. Установка зависимостей
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Настройка окружения
-Создайте файл `.env` в корне проекта и добавьте:
-```bash
-DATABASE_URL=postgres://postgres:your_password@localhost:5432/habit_tracker
-SECRET_KEY=your_django_secret_key
-TELEGRAM_BOT_TOKEN=your_telegram_bot_token
-```
-- Замените `your_password`, `your_django_secret_key` и `your_telegram_bot_token` на свои значения.
-
-### 5. Применение миграций
-```bash
-python habit_tracker/manage.py migrate
-```
-
-### 6. Запуск Redis
-```bash
-docker run -d -p 6379:6379 redis
-```
-
-### 7. Запуск сервера
-```bash
-python habit_tracker/manage.py runserver
-```
-
-### 8. Запуск Celery
 
 
 ```bash
-celery -A habit_tracker worker -l info
+SECRET_KEY=ваш-secret-key
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+DB_ENGINE=django.db.backends.postgresql
+DB_NAME=postgres
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+DB_HOST=db
+DB_PORT=5432
+
+CELERY_BROKER_URL=redis://redis:6379/0
+
+TELEGRAM_BOT_TOKEN=ваш-telegram-токен
+TELEGRAM_CHAT_ID=ваш-chat-id
 ```
-
----
-
-## Использование системы
-
-### Для пользователей
-1. Создайте учётную запись через API: POST /api/users/register/.
-2. Авторизуйтесь для получения токена: POST /api/users/login/.
-3. Используйте заголовок Authorization: Token <token> для доступа к защищённым эндпоинтам.
-4. Управляйте привычками и получайте напоминания через Telegram.
-
-### Эндпоинты API
-- **Базовый URL**: `http://127.0.0.1:8000/api/`
-- **Основные маршруты**:
-- POST /api/users/register/ — регистрация нового пользователя.
-- POST /api/users/login/ — авторизация и получение токена.
-- GET /api/habits/ — просмотр привычек авторизованного пользователя.
-- POST /api/habits/ — добавление новой привычки.
-- GET /api/habits/public/ — список общедоступных привычек.
-- PATCH /api/habits/<id>/ — частичное обновление привычки.
-- DELETE /api/habits/<id>/ — удаление привычки.
-
-### Документация API
-- **Swagger**: `http://127.0.0.1:8000/swagger/`
-
----
-
-## Тестирование
-
-Запустите тесты из директории `habit_tracker`:
 
 
 ```bash
-cd habit_tracker
-pytest -v --cov=habits --cov-report=html
+docker-compose up --build
 ```
-- **Покрытие кода**: 97% (см. `htmlcov/index.html`).
 
-Для тестирования приложения `users`:
+
 ```bash
-pytest -v --cov=users --cov-report=html
+docker-compose exec web python manage.py createsuperuser
+```
+Деплой на сервер
+Требования к серверу
+Ubuntu 22.04 LTS
+
+Docker 24.0+
+
+Docker Compose 2.20+
+
+Открытые порты: 80 (HTTP), 22 (SSH)
+
+Настройка сервера
+Подключитесь к серверу по SSH
+
+Установите Docker и Docker Compose:
+```bash
+sudo apt update && sudo apt upgrade -y
+sudo apt install docker.io docker-compose -y
+sudo usermod -aG docker $USER
+newgrp docker
 ```
 
 
----
+```bash
+git clone https://github.com/npoblema/Habit_tracker_2.git
+cd Habit_tracker_2
+```
 
-## Организация проекта
 
-- **`habit_tracker/`**: Основная директория проекта.
-- **`habits/`**: Модуль для управления привычками (модели, сериализаторы, представления, тесты).
-- **`users/`**: Модуль для работы с пользователями (регистрация, авторизация).
-- **`requirements.txt`**: Перечень зависимостей.
-- **`pytest.ini`**: Настройки для тестирования.
+```bash
+docker-compose up --build -d
+```
 
----
+CI/CD Pipeline
+Процесс автоматической сборки и деплоя настроен через GitHub Actions и включает:
 
-## Для разработчиков
+Тестирование:
 
-- Аутентификация реализована через Token Authentication (DRF). Токен передаётся в заголовке: `Authorization: Token <token>`.
-- Для настройки Telegram-бота замените `TELEGRAM_BOT_TOKEN` в `.env` на свой токен.
-- Добавление новых эндпоинтов возможно через `habits/urls.py` или `users/urls.py`.
+Запуск unit-тестов Django
 
----
+Проверка миграций
 
-## Автор проекта 
+Линтинг:
 
-- **Григорьев Кирилл**
+Проверка кода с помощью flake8
+
+Сборка:
+
+Проверка сборки Docker-образов
+
+Деплой (при пуше в main):
+
+Подключение к серверу по SSH
+
+Обновление кода
+
+Перезапуск контейнеров
+
+Настройка Secrets в GitHub
+Для работы CI/CD необходимо добавить в Secrets репозитория:
+
+SSH_PRIVATE_KEY - приватный SSH-ключ для доступа к серверу
+
+SERVER_IP - IP-адрес сервера
+
+USERNAME - имя пользователя на сервере (обычно ubuntu)
+
+TELEGRAM_BOT_TOKEN - токен Telegram бота
+
+TELEGRAM_CHAT_ID - ID чата для уведомлений
+
+Адрес сервера
+Проект развернут по адресу: http://ваш-ip-адрес
+```bash
+Habit_tracker_2/
+├── .github/workflows/  # GitHub Actions workflows
+├── habits/             # Приложение привычек
+├── users/              # Приложение пользователей
+├── habit_tracker/      # Основной проект Django
+├── Dockerfile          # Конфигурация Docker для Django
+├── docker-compose.yml  # Конфигурация всех сервисов
+├── nginx.conf          # Конфигурация Nginx
+├── requirements.txt    # Зависимости Python
+└── .env_sample         # Шаблон файла окружения
+```
+
+
+```bash
+docker-compose down
+```
+
+
+```bash
+docker-compose logs -f
+```
+
+
+```bash
+docker-compose up --build -d
+```
+
+
+Важные замечания
+Не коммитьте файл .env в репозиторий
+
+Для работы Telegram бота необходимо указать корректные TELEGRAM_BOT_TOKEN и TELEGRAM_CHAT_ID
+
+После завершения работы не забудьте остановить сервер в Yandex Cloud
