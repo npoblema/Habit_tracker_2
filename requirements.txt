@@ -71,3 +71,4 @@ wcwidth==0.2.13
 webdriver-manager==4.0.2
 websockets==15.0.1
 wsproto==1.2.0
+flake8==7.0.0
